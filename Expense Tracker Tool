@@ -1,0 +1,57 @@
+# Expense Tracker Project
+import csv
+import os
+import shutil
+print( '--- Personal Expenses Tracker Tool ---' )
+    
+filename = 'expenses.csv'
+if not os.path.exists(filename):
+    with open(filename,'w',newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(['Date','Category','Amount','Note'])
+    
+while True: 
+    print(f'1. Add Expense\n2. View all expenses\n3. View all expenses by category\n4. Export Data\n5. Exit')
+    user_choice = input('Choose btw 1-5: ').strip()
+
+    if user_choice == "1":
+        amount = float(input('Amount: '))
+        category = input('Category: ')
+        date = input('Date(DD/MM/YYYY): ')
+        note = input('Note (Additional info): ')
+
+        with open(filename,'a',newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([date,category,amount,note])
+        print(f'{category.title()} expenses added succesfully ✅')
+     
+    elif user_choice == '2':
+        with open(filename,'r') as f:
+            reader = csv.reader(f)
+            next(reader)
+            print('\n---  All Expenses  ---')
+            for row in reader:
+                print(f'Date: {row[0]}\nCategory: {row[1]}\nAmount: {row[2]}\nNote: {row[3]}')
+    
+    elif user_choice == '3':
+        user_input = input('Enter category to search: ').strip()
+        total = 0 
+        with open(filename,'r') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row['Category'].strip() == user_input:
+                    total+= float(row['Amount'])
+        print(f'Total expense for category {user_input.title()}: Rs{total}')
+    
+    elif user_choice == '4':
+        export_name = input("Enter export filename (e.g., backup_expenses.csv): ").strip()
+        shutil.copy(filename, export_name)
+        print(f"Data exported successfully as '{export_name}' ✅")
+     
+
+        print(f"Data exported successfully to '{filename}'!")
+    elif user_choice == '5':
+        print('Thanks for using.\nExisted from the Tool.')
+        break
+    else:
+        print('Invalid Input!')
